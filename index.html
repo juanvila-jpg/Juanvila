@@ -763,6 +763,7 @@ html,body{overflow-x:hidden;touch-action:pan-y;}
         concept: "La identidad se fundamenta en la chancleta como elemento central, un objeto cotidiano profundamente arraigado en la cultura local que simboliza cercanía e informalidad,. Al integrarse con el concepto del andén como superficie de tránsito, la marca comunica que el diseño nace desde los pies de las personas, estableciendo una relación directa entre el cuerpo, el objeto y el territorio a través de un equilibrio visual entre la fluidez de las formas orgánicas y la solidez de una tipografía angular y rígida.",
         tools: ["Illustrator", "Lightroom", "Sketchbook"],
         tags: ["Branding", "Imagotipos", "Identidad Visual"],
+        mobileHero: "fotos/es.png",
         year: "2026",
         pdf: "fotos/manual anden.pdf",
         size: "large", // grid span
@@ -1228,7 +1229,9 @@ html,body{overflow-x:hidden;touch-action:pan-y;}
           
           <!-- Header image -->
           <div class="relative aspect-video rounded-t-xl overflow-hidden">
-            <img src="${project.images[0]}" alt="${project.title}" class="w-full h-full object-cover">
+            <img src="${window.innerWidth <= 768 && project.mobileHero ? project.mobileHero : project.images[0]}"
+            alt="${project.title}"
+            class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-deepbg via-deepbg/30 to-transparent"></div>
             <div class="absolute bottom-6 left-6 right-6">
               <div class="flex flex-wrap gap-2 mb-3">
