@@ -415,7 +415,17 @@
       color: #0A0A0F;
       transform: translateY(-2px);
     }
-  </style>
+  
+@media (max-width:768px){
+#contact a[href^="mailto"]{width:100%;max-width:100%;padding:16px;justify-content:center;text-align:center;font-size:.9rem;white-space:normal;overflow-wrap:anywhere;word-break:break-word;}
+.about-expand.open{max-height:5000px;}
+.modal-panel{width:95vw;max-height:95vh;}
+.modal-panel .grid.grid-cols-2{grid-template-columns:1fr;}
+p,h1,h2,h3,span,a{overflow-wrap:anywhere;}
+html,body{overflow-x:hidden;touch-action:pan-y;}
+}
+
+</style>
 </head>
 <body class="noise-overlay font-space text-white">
 
