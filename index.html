@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Juan Vilá </title>
+  <link rel="icon" type="image/png" href="fotos/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Archivo+Black&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'syne': ['Syne', 'sans-serif'],
+            'space': ['Space Grotesk', 'sans-serif'],
+            'archivo': ['Archivo Black', 'sans-serif'],
+          },
+          colors: {
+            'neon': '#00FF88',
+            'coral': '#FF3366',
+            'electric': '#7B2FFF',
+            'sun': '#FFD600',
+            'cyan': '#00E5FF',
+            'hotpink': '#FF00A0',
+            'deepbg': '#0A0A0F',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { cursor: none; }
+    
+    :root {
+      --neon: #00FF88;
+      --coral: #FF3366;
+      --electric: #7B2FFF;
+      --sun: #FFD600;
+      --cyan: #00E5FF;
+      --hotpink: #FF00A0;
+    }
+
+    ::selection {
+      background: var(--coral);
+      color: #fff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #0A0A0F;
+      overflow-x: hidden;
+    }
+
+    /* Custom Cursor */
+    .custom-cursor {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--neon);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+      mix-blend-mode: difference;
+    }
+
+    .custom-cursor.hovering {
+      transform: translate(-50%, -50%) scale(2.5);
+      background: var(--coral);
+      border-color: var(--coral);
+    }
+
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--neon);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 100000;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0A0A0F; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(var(--coral), var(--electric));
+      border-radius: 4px;
+    }
+
+    /* Hero */
+    .hero-title .char {
+      display: inline-block;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .hero-title:hover .char {
+      transform: translateY(-8px) rotate(-5deg);
+      color: var(--coral);
+    }
+
+    .hero-title:hover .char:nth-child(even) {
+      transform: translateY(8px) rotate(5deg);
+      color: var(--neon);
+    }
+
+    /* Marquee */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-track {
+      animation: marquee 20s linear infinite;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* Floating shapes */
+    @keyframes float1 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(30px, -20px) rotate(90deg); }
+      50% { transform: translate(-10px, -40px) rotate(180deg); }
+      75% { transform: translate(-30px, -10px) rotate(270deg); }
+    }
+
+    @keyframes float2 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(-40px, 20px) rotate(120deg); }
+      66% { transform: translate(20px, 30px) rotate(240deg); }
+    }
+
+    @keyframes float3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -30px) scale(1.2); }
+    }
+
+    @keyframes spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .float-1 { animation: float1 8s ease-in-out infinite; }
+    .float-2 { animation: float2 10s ease-in-out infinite; }
+    .float-3 { animation: float3 6s ease-in-out infinite; }
+    .spin-slow { animation: spin-slow 20s linear infinite; }
+    .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+    /* Gallery Items */
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), z-index 0s;
+    }
+
+    .gallery-item:hover {
+      z-index: 50;
+      transform: scale(1.03);
+    }
+
+    .gallery-item img {
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.1);
+      filter: brightness(0.7) saturate(1.2);
+    }
+
+    .gallery-item .overlay {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+    }
+
+    .gallery-item:hover .overlay {
+      opacity: 1;
+    }
+
+    .overlay-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.4) 50%, transparent 100%);
+    }
+
+    /* Category tags */
+    .cat-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: transform 0.3s ease;
+    }
+
+    .cat-tag:hover {
+      transform: scale(1.1);
+    }
+
+    /* Filter buttons */
+    .filter-btn {
+      position: relative;
+      padding: 10px 24px;
+      border: 2px solid transparent;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      overflow: hidden;
+    }
+
+    .filter-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .filter-btn:hover::before {
+      opacity: 1;
+    }
+
+    .filter-btn.active {
+      color: #0A0A0F;
+      transform: scale(1.05);
+    }
+
+    .filter-btn.active:hover {
+      transform: scale(1.08);
+    }
+
+    /* Project Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(20px);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      z-index: 1001;
+      width: 90vw;
+      max-width: 1000px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .modal-panel.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-panel::-webkit-scrollbar { width: 4px; }
+    .modal-panel::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 2px; }
+
+    /* Decorative stripe */
+    .stripe-decoration {
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 8px,
+        rgba(255,255,255,0.03) 8px,
+        rgba(255,255,255,0.03) 16px
+      );
+    }
+
+    /* Noise overlay */
+    .noise-overlay::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 99998;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* Stagger animation */
+    .stagger-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .stagger-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Glitch text effect on hover */
+    .glitch-hover:hover {
+      animation: glitch 0.3s ease;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+
+    /* Color cycle for decorative elements */
+    @keyframes colorCycle {
+      0% { color: var(--neon); }
+      16% { color: var(--coral); }
+      33% { color: var(--electric); }
+      50% { color: var(--sun); }
+      66% { color: var(--cyan); }
+      83% { color: var(--hotpink); }
+      100% { color: var(--neon); }
+    }
+
+    .color-cycle {
+      animation: colorCycle 8s linear infinite;
+    }
+
+    /* About section expand */
+    .about-expand {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .about-expand.open {
+      max-height: 800px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      * { cursor: auto; }
+      .custom-cursor, .cursor-dot { display: none; }
+    }
+
+    /* Link underline effect */
+    .link-underline {
+      position: relative;
+    }
+
+    .link-underline::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--neon);
+      transition: width 0.3s ease;
+    }
+
+    .link-underline:hover::after {
+      width: 100%;
+    }
+
+    /* Tag pill animation */
+    .tool-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.25s ease;
+    }
+
+    .tool-tag:hover {
+      background: var(--neon);
+      color: #0A0A0F;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="noise-overlay font-space text-white">
+
+  <!-- Custom Cursor -->
+  <div class="custom-cursor" id="cursor"></div>
+  //<div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- ==================== NAVIGATION ==================== -->
+  <nav class="fixed top-0 left-0 w-full z-[900] px-6 md:px-10 py-5 flex items-center justify-between" id="navbar">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon to-electric flex items-center justify-center font-syne font-extrabold text-deepbg text-lg">JV</div>
+      <span class="font-syne font-bold text-sm uppercase tracking-widest hidden sm:block">JUAN D. VILÁ CORTÉS</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium uppercase tracking-wider">
+      <a href="#hero" class="link-underline text-white/70 hover:text-neon transition-colors">Inicio</a>
+      <a href="#gallery" class="link-underline text-white/70 hover:text-neon transition-colors">Trabajos</a>
+      <a href="#about-trigger" class="link-underline text-white/70 hover:text-neon transition-colors">Sobre Mí</a>
+      <a href="#contact" class="link-underline text-white/70 hover:text-neon transition-colors">Contacto</a>
+    </div>
+    <button class="md:hidden text-white" id="mobileMenuBtn">
+      <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="fixed inset-0 z-[950] bg-deepbg/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 transition-all duration-500 opacity-0 pointer-events-none" id="mobileMenu">
+    <button class="absolute top-6 right-6 text-white" id="closeMobileMenu">
+      <i data-lucide="x" class="w-7 h-7"></i>
+    </button>
+    <a href="#hero" class="font-syne text-3xl font-bold text-white hover:text-neon transition-colors mobile-link">Inicio</a>
+    <a href="#gallery" class="font-syne text-3xl font-bold text-white hover:text-coral transition-colors mobile-link">Trabajos</a>
+    <a href="#about-trigger" class="font-syne text-3xl font-bold text-white hover:text-sun transition-colors mobile-link">Sobre Mí</a>
+    <a href="#contact" class="font-syne text-3xl font-bold text-white hover:text-electric transition-colors mobile-link">Contacto</a>
+  </div>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+    <!-- Decorative floating shapes -->
+    <div class="absolute top-20 left-[8%] w-28 h-28 rounded-full border-2 border-neon/30 float-1"></div>
+    <div class="absolute top-40 right-[12%] w-16 h-16 bg-coral/20 rounded-full float-2"></div>
+    <div class="absolute bottom-32 left-[15%] w-20 h-20 border-2 border-electric/40 rotate-45 float-3"></div>
+    <div class="absolute bottom-48 right-[8%] w-32 h-32 rounded-full border-2 border-sun/20 spin-slow"></div>
+    <div class="absolute top-[30%] left-[45%] w-3 h-3 bg-neon rounded-full pulse-glow"></div>
+    <div class="absolute top-[60%] left-[70%] w-2 h-2 bg-coral rounded-full pulse-glow" style="animation-delay: 1s;"></div>
+
+    <!-- Big decorative text -->
+    <div class="absolute -bottom-10 left-0 font-archivo text-[18vw] text-white/[0.03] leading-none whitespace-nowrap select-none pointer-events-none">
+      DESIGN
+    </div>
+
+    <div class="relative z-10 w-full px-6 md:px-16 pt-28 pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left: Text -->
+        <div class="lg:col-span-7">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-[2px] bg-neon"></div>
+            <span class="text-neon font-space text-sm uppercase tracking-[0.2em] font-medium">Diseñador Digital</span>
+          </div>
+
+          <h1 class="hero-title font-syne text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[0.9] mb-8" id="heroTitle">
+            <span class="block">Juan D.</span>
+            <span class="block bg-gradient-to-r from-neon via-cyan to-electric bg-clip-text text-transparent">Vilá Cortés</span>
+          </h1>
+
+          <p class="text-white/50 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light">
+            Creando experiencias visuales que rompen esquemas. Cada proyecto es una revolución.
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <a href="#gallery" class="group inline-flex items-center gap-3 px-7 py-4 bg-neon text-deepbg font-syne font-bold text-sm uppercase tracking-wider rounded-full transition-all duration-300 hover:bg-coral hover:scale-105">
+              Ver trabajos
+              <i data-lucide="arrow-down-right" class="w-4 h-4 transition-transform group-hover:rotate-45"></i>
+            </a>
+            <a href="#contact" class="inline-flex items-center gap-3 px-7 py-4 border-2 border-white/20 text-white font-syne font-bold text-sm uppercase tracking-wider rounded-full transition-all duration-300 hover:border-neon hover:text-neon hover:scale-105">
+              Hablemos
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Image collage -->
+        <div class="lg:col-span-5 relative hidden lg:block">
+          <div class="relative w-full aspect-square">
+            <div class="absolute top-0 right-8 w-96 h-64 rounded-2xl overflow-hidden rotate-3 shadow-2xl shadow-electric/20 transition-transform duration-500 hover:rotate-0 hover:scale-105">
+              <img src="fotos/anden01.png" alt="Creative work" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute bottom-10 left-0 w-80 h-52 rounded-2xl overflow-hidden -rotate-6 shadow-2xl shadow-coral/20 transition-transform duration-500 hover:rotate-0 hover:scale-105">
+              <img src="fotos/bannercodigo.png" alt="Creative work" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 bg-gradient-to-br from-coral to-electric rounded-full flex items-center justify-center pulse-glow">
+              <span class="font-syne font-extrabold text-deepbg text-xs uppercase tracking-widest text-center leading-tight">5+ años<br>creando</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+      <span class="text-white/30 text-xs uppercase tracking-widest font-space">Scroll</span>
+      <div class="w-[1px] h-8 bg-gradient-to-b from-neon to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- ==================== MARQUEE ==================== -->
+  <div class="relative overflow-hidden py-6 border-y border-white/5" id="marqueeSection">
+    <div class="marquee-track flex items-center whitespace-nowrap gap-8">
+      <span class="font-archivo text-5xl md:text-7xl text-white/5 mx-4">BRANDING</span>
+      <span class="text-neon text-3xl">✦</span>
+      <span class="font-archivo text-5xl md:text-7xl text-white/5 mx-4">ILUSTRACIÓN</span>
+      <span class="text-coral text-3xl">✦</span>
+      <span class="font-archivo text-5xl md:text-7xl text-white/5 mx-4">LOGOTIPOS</span>
+      <span class="text-electric text-3xl">✦</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="font-archivo text-5xl md:text-7xl text-white/5 mx-4">BRANDING</span>
+      <span class="text-neon text-3xl">✦</span>
+      <span class="font-archivo text-5xl md:text-7xl text-white/5 mx-4">ILUSTRACIÓN</span>
+      <span class="text-coral text-3xl">✦</span>
+      <span class="font-archivo text-5xl md:text-7xl text-white/5 mx-4">LOGOTIPOS</span>
+      <span class="text-electric text-3xl">✦</span>
+    </div>
+  </div>
+
+  <!-- ==================== GALLERY SECTION ==================== -->
+  <section id="gallery" class="relative px-6 md:px-12 lg:px-16 py-16 md:py-24">
+    <!-- Decorative elements -->
+    <div class="absolute top-10 right-16 w-40 h-40 border border-electric/10 rounded-full spin-slow pointer-events-none"></div>
+    <div class="absolute bottom-20 left-8 w-24 h-24 border border-coral/10 rounded-full spin-slow pointer-events-none" style="animation-direction: reverse;"></div>
+
+    <!-- Section header -->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-[2px] bg-coral"></div>
+          <span class="text-coral font-space text-xs uppercase tracking-[0.2em]">Portafolio</span>
+        </div>
+        <h2 class="font-syne text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+          Trabajos<br>
+          <span class="bg-gradient-to-r from-coral via-hotpink to-electric bg-clip-text text-transparent">Seleccionados</span>
+        </h2>
+      </div>
+      <p class="text-white/40 max-w-sm text-sm leading-relaxed">
+        Cada proyecto es una historia visual. Explora, interactúa y descubre el concepto detrás de cada pieza.
+      </p>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="flex flex-wrap gap-3 mb-12" id="filterContainer">
+      <button class="filter-btn active bg-neon text-deepbg" data-filter="all" data-color="neon">
+        Todos
+      </button>
+      <button class="filter-btn bg-white/5 text-white/70 hover:bg-coral hover:text-deepbg" data-filter="branding" data-color="coral">
+        Branding
+      </button>
+      <button class="filter-btn bg-white/5 text-white/70 hover:bg-electric hover:text-white" data-filter="logotipos" data-color="electric">
+        Logotipos
+      </button>
+      <button class="filter-btn bg-white/5 text-white/70 hover:bg-sun hover:text-deepbg" data-filter="ilustracion" data-color="sun">
+        Ilustración
+      </button>
+    </div>
+
+    <!-- Gallery Grid (Asymmetric Masonry) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5" id="galleryGrid">
+      <!-- Items will be generated by JavaScript -->
+    </div>
+
+    <!-- Load more -->
+    <div class="flex justify-center mt-14">
+      <button class="group inline-flex items-center gap-3 px-8 py-4 border-2 border-white/15 text-white/50 font-syne font-bold text-sm uppercase tracking-wider rounded-full transition-all duration-400 hover:border-neon hover:text-neon hover:bg-neon/5" id="loadMoreBtn">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Cargar más proyectos
+      </button>
+    </div>
+  </section>
+
+  <!-- ==================== ABOUT EXPAND SECTION ==================== -->
+  <section class="relative px-6 md:px-16 py-6" id="about-trigger">
+    <button class="w-full group" id="aboutToggle">
+      <div class="flex items-center justify-between py-8 border-t border-b border-white/10 transition-colors group-hover:border-neon/30">
+        <div class="flex items-center gap-4">
+          <span class="text-neon font-space text-xs uppercase tracking-[0.2em]">01</span>
+          <h2 class="font-syne text-3xl md:text-5xl lg:text-6xl font-extrabold">Sobre Mí</h2>
+        </div>
+        <div class="w-12 h-12 rounded-full border-2 border-white/20 flex items-center justify-center transition-all group-hover:border-neon group-hover:bg-neon group-hover:text-deepbg" id="aboutIcon">
+          <i data-lucide="plus" class="w-5 h-5 transition-transform duration-500" id="aboutPlusIcon"></i>
+        </div>
+      </div>
+    </button>
+
+    <div class="about-expand" id="aboutContent">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 py-12 px-2">
+        <div class="relative aspect-[4/5] rounded-2xl overflow-hidden max-w-md">
+          <img src="fotos/juan.png" alt="Juan Vilá" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-deepbg/60 to-transparent"></div>
+          <div class="absolute bottom-6 left-6">
+            <span class="font-syne text-2xl font-bold">Juan Domingo Vilá Cortés</span>
+            <p class="text-white/50 text-sm">Santa Marta, Colombia</p>
+          </div>
+        </div>
+        <div class="flex flex-col justify-center gap-6">
+          <p class="text-white/60 text-lg leading-relaxed">
+            Soy diseñador digital y creativo con más de cinco años de experiencia construyendo identidades visuales estratégicas y cohesivas. Mi enfoque fusiona el diseño de marca con la producción audiovisual, la fotografía y la generación de contenido para diversos entornos digitales. Integro habilidades técnicas en animación y desarrollo web para narrar historias visuales potentes en proyectos con impacto internacional. Busco transformar conceptos en experiencias memorables mediante una visión creativa que potencia el posicionamiento de marca en el mercado actual.
+          </p>
+          <p class="text-white/60 text-lg leading-relaxed">
+            He colaborado con marcas y proyectos internacionales como Cine Qua Non Lab, Tákim y el fondo IBERESCENA, desarrollando identidades visuales estratégicas que trascienden lo convencional. Mi enfoque integra diseño conceptual, fotografía y producción audiovisual para transformar cada pieza en una experiencia visual memorable y funcional.
+
+          </p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="tool-tag">Illustrator</span>
+            <span class="tool-tag">Photoshop</span>
+            <span class="tool-tag">Lightroom</span>
+            <span class="tool-tag">Sketchbook</span>
+            <span class="tool-tag">Visual Studio Code</span>
+            <span class="tool-tag">Stop Motion Studio</span>
+            <span class="tool-tag">Wondershare Filmora</span>
+          </div>
+          <div class="flex items-center gap-6 mt-4">
+            <a href="#contact" class="inline-flex items-center gap-2 text-neon font-syne font-bold text-sm uppercase tracking-wider hover:gap-4 transition-all">
+              Contactar <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a href="fotos/Juan Domingo Vilá Cortés HV 2026.pdf" target="_blank" class="inline-flex items-center gap-2 text-white/40 font-space text-sm hover:text-coral transition-colors">
+              Descargar CV <i data-lucide="download" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CONTACT SECTION ==================== -->
+  <section id="contact" class="relative px-6 md:px-16 py-20 md:py-32 overflow-hidden">
+    <!-- Big background text -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+      <span class="font-archivo text-[20vw] text-white/[0.02] whitespace-nowrap">A DARLE</span>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <div class="w-8 h-[2px] bg-electric"></div>
+        <span class="text-electric font-space text-xs uppercase tracking-[0.2em]">Contacto</span>
+        <div class="w-8 h-[2px] bg-electric"></div>
+      </div>
+
+      <h2 class="font-syne text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6">
+        ¿Tienes un<br>
+        <span class="bg-gradient-to-r from-electric via-hotpink to-coral bg-clip-text text-transparent">proyecto en mente?</span>
+      </h2>
+
+      <p class="text-white/40 text-lg mb-10 max-w-lg mx-auto">
+        Me encanta escuchar ideas locas. Si buscas alguien que rompa las reglas del diseño, hablemos.
+      </p>
+
+      <a href="mailto:juandonei14@hotmail.com" class="group inline-flex items-center gap-4 px-10 py-5 bg-gradient-to-r from-electric to-hotpink text-white font-syne font-bold text-base uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-electric/30">
+        <i data-lucide="mail" class="w-5 h-5"></i>
+        juandonei14@hotmail.com
+      </a>
+
+      <div class="flex items-center justify-center gap-6 mt-12">
+        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:border-neon hover:text-neon hover:bg-neon/5 transition-all">
+          <i data-lucide="instagram" class="w-5 h-5"></i>
+        </a>
+        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:border-coral hover:text-coral hover:bg-coral/5 transition-all">
+          <i data-lucide="dribbble" class="w-5 h-5"></i>
+        </a>
+        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:border-electric hover:text-electric hover:bg-electric/5 transition-all">
+          <i data-lucide="linkedin" class="w-5 h-5"></i>
+        </a>
+        <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:border-sun hover:text-sun hover:bg-sun/5 transition-all">
+          <i data-lucide="twitter" class="w-5 h-5"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-white/5 px-6 md:px-16 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-neon to-electric flex items-center justify-center font-syne font-extrabold text-deepbg text-xs">JV</div>
+        <span class="text-white/30 text-sm">© 2026 Juan Domingo Vilá Cortés. Todos los derechos reservados.</span>
+      </div>
+      <div class="flex items-center gap-2 text-white/20 text-sm">
+        <span>Hecho con</span>
+        <i data-lucide="heart" class="w-4 h-4 text-coral"></i>
+        <span>y mucha creatividad</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== PROJECT MODAL ==================== -->
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div class="modal-panel bg-deepbg border border-white/10" id="modalPanel">
+    <div id="modalContent">
+      <!-- Dynamic content -->
+    </div>
+  </div>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    // ===========================
+    // PROJECT DATA
+    // ===========================
+    const projects = [
+      {
+        id: 1,
+        title: "Andén Diseñadores",
+        subtitle: "Identidad Visual",
+        category: "branding",
+        colorName: "coral",
+        image: src="fotos/logo anden.png",
+        images: [
+          src="fotos/anden01.png",
+          src="fotos/anden07.png",
+          src="fotos/anden03.png",
+        ],
+        description: "Desarrollo de la identidad corporativa para un colectivo de diseño enfocado en la creación de mobiliario público centrado en el usuario, con especial énfasis en los contextos costeros y urbanos de la región Caribe. El diseño buscaba reflejar una propuesta humana y pertinente que respondiera a las necesidades reales de habitar y recorrer el espacio público en ciudades como Santa Marta.",
+        concept: "La identidad se fundamenta en la chancleta como elemento central, un objeto cotidiano profundamente arraigado en la cultura local que simboliza cercanía e informalidad,. Al integrarse con el concepto del andén como superficie de tránsito, la marca comunica que el diseño nace desde los pies de las personas, estableciendo una relación directa entre el cuerpo, el objeto y el territorio a través de un equilibrio visual entre la fluidez de las formas orgánicas y la solidez de una tipografía angular y rígida.",
+        tools: ["Illustrator", "Lightroom", "Sketchbook"],
+        tags: ["Branding", "Imagotipos", "Identidad Visual"],
+        year: "2026",
+        pdf: "fotos/manual anden.pdf",
+        size: "large", // grid span
+        rotation: -1.5
+      },
+      {
+        id: 2,
+        title: "Narval",
+        subtitle: "Diseño de Logotipo",
+        category: "logotipos",
+        colorName: "electric",
+        image: src="fotos/narval01.png",
+        images: [
+          "fotos/narval03.png",
+          "fotos/narval.png",
+          "fotos/narval04.png"
+        ],
+        description: "Narval nace como imagotipo de una agencia de diseñadores gráficos cuya intención era demostrar que el diseño de marca no debe ser un territorio exclusivo de especialistas, sino una herramienta capaz de conectar ideas, personas y proyectos a través de un lenguaje visual cercano.",
+        concept: "Inspirado en la singularidad del narval, este proyecto propone una identidad con una tipografía dura y disruptiva, colores contrastantes y una imagen sumamente recordable, un punto de encuentro entre la exploración creativa y la comunicación visual.",
+        tools: ["Canva", "Photoshop", "Illustrator"],
+        tags: ["Editorial", "Tipografía", "Logotipo"],
+        year: "2024",
+        size: "medium",
+        rotation: 1
+      },
+      {
+        id: 3,
+        title: "Aguamarina",
+        subtitle: "Ilustraciones",
+        category: "ilustracion",
+        colorName: "neon",
+        image: "fotos/34.png",
+        images: [
+          "fotos/foto32.png",
+          "fotos/35.png",
+          "fotos/47.png",
+        ],
+        description: "Serie de ilustraciones digitales para la escuela Aguamarina Taller Creativo, un espacio virtual de enseñanza de las artes, la danza y la música para la primera infancia, cuyo concepto giró entorno también al trabajo de programación de la página web y una identidad dulce con colores pastel y figuras poco complejas que representasen la naturalidad del diseño pensado desde y para la niñez.",
+        concept: "Los instrumentos autóctonos, la diversidad cultural y la infancia plasmada desde su recocijo cotidiano: alegría, música y colores repartidos con esmero y armonía, buscando siempre el equilibrio entre la suavidad y la claridad.",
+        tools: ["Sketchbook", "Illustrator"],
+        tags: ["Ilustración"],
+        year: "2021-2023",
+        size: "small",
+        rotation: -2
+      },
+      {
+        id: 4,
+        title: "La Orilla Médica",
+        subtitle: "Logotipo",
+        category: "logotipos",
+        colorName: "sun",
+        image: "fotos/logo2.png",
+        images: [
+          "fotos/orilla03.png",
+          "fotos/orilla10.png",
+          "fotos/orilla01.png"
+        ],
+        description: "Diseño de un imagotipo para un centro médico de atención a primeros auxilios para la playa de Bello Horizonte en Santa Marta, enmarcada en la atención directa al usuario y la prevención contra picaduras de animales marinos.",
+        concept: "Busqué un diseño visual muy directo: tanto en la concepción del nombre como de la imagen, la idea era buscar cercanía con el usuario en un contexto médico, de forma que surgiese la divergencia entre la creatividad de la orilla y la claridad de la medicina, envueltos en una tipografía robusta y comprensible, y con colores contrastantes que hiciesen parte de la paleta de Andén.",
+        tools: ["Illustrator", "Sketchbook", "Photoshop"],
+        tags: ["Logotipo", "Tipografía", "Iconografía"],
+        year: "2026",
+        size: "medium",
+        rotation: 0.5
+      },
+      {
+        id: 5,
+        title: "Código Sports",
+        subtitle: "Logotipo",
+        category: "logotipos",
+        colorName: "cyan",
+        image: "fotos/logo1.png",
+        images: [
+          "fotos/bannercodigo.png",
+          "fotos/logoprincipal.png",
+          "fotos/logo6.png",
+          "fotos/logo44.png",
+          "fotos/logo33.png"
+        ],
+        description: "Diseño de logotipo e identidad colorimétrica para un canal de análisis deportivo colombiano enfocado en el fútbol, Fórmula 1 y ciclismo. Nacido de los preceptos en el nicho, Código Sports se planteó como una alternativa al periodismo convencional partiendo de historias atemporales disponibles para el conocimiento de toda la población.",
+        concept: "Desde la simplificación de la bandera en el responsive, pasando por las serifas de la letra y el contraste del gris con el vistoso rojo inferior, la idea de este logo era capturar inmediatamente la atención del usuario y generar recordación con una estructura visual poco compleja pero con suficiente iconicidad, principalmente en la bandera con las iniciales, en un entorno saturado de logos deportivos.",
+        tools: ["Illustrator", "Sketchbook", "Canva"],
+        tags: ["Logotipo", "Logo Responsive", "Tipografía"],
+        year: "2025",
+        size: "small",
+        rotation: 1.5
+      },
+      {
+        id: 6,
+        title: "Circles Of The Self",
+        subtitle: "Rediseño de Imagen",
+        category: "branding",
+        colorName: "hotpink",
+        image: "fotos/logo3.png",
+        images: [
+          "fotos/circles07.png",
+          "fotos/circles1.png",
+          "fotos/circles3.png",
+          "fotos/circlesdef.png",
+          "fotos/circles2.png",
+        ],
+        description: "Circles of the Self es un curso online e interactivo que utiliza mandalas, formas y color como herramientas terapéuticas para la autoexploración y el bienestar emocional dentro de la rama de la musicoterapia. Es parte del repertorio de la escuela de musicoterapia Tákim, la cual me buscó para rediseñar el logo de este curso, el cual llevaba muchos años sin cambios y necesitaba una revitalización junto con un manual de marca.",
+        concept: "Al principio propuse varios conceptos muy diferentes, pero prevaleció éste imagotipo, con ideas reconstruidas del anterior, donde se añadió la texturización de pintura al logo y se creó desde cero una identidad mucho más sólida: paleta de colores cálidos, elementos de marca y un concepto de marca más escalable que buscaba no la recordación del usuario nuevo, sino la apropiación de los pacientes y alumnos de la escuela de una imagen de marca que transmitiese serenidad, confianza y creatividad a través de la pintura, la forma del mandala deconstruido eliminando por completo la simetría y buscando la disgregación del orden por un concepto mayor de fluidez. La disposición radial y los colores pastel también fueron complementos para unificar este trabajo excelso de diseño y arte.",
+        tools: ["Illustrator", "Sktechbook"],
+        tags: ["Branding", "Rediseño Imagotipos", "Identidad Visual"],
+        year: "2025",
+        pdf: "fotos/manual_circles.pdf",
+        size: "large",
+        rotation: -0.5
+      },
+      {
+        id: 7,
+        title: "Ilustración Vectorial",
+        subtitle: "Con Illustrator",
+        category: "ilustracion",
+        colorName: "coral",
+        image: "fotos/cavernicola2.png",
+        images: [
+          "fotos/cavernicola3.jpg",
+          "fotos/gallo.png",
+          "fotos/pato.png"
+        ],
+        description: "Serie de trabajos de ilustración haciendo uso de vectores en Adobe Illustrator, que buscaban conceptualizar personajes de marca o de animación a través de figuras simples replicables, dando profundidad y detalles por medio de la simplificación gráfica.",
+        concept: "Los vectores pueden usarse más allá de ser una herramienta para diseñar logos; son una forma de arte que, si bien complejiza algunos procesos que podrían resolverse de manera más sencilla con un trazo a mano, ofrece un campo inmenso de posibilidades gráficas, donde cada forma puede transfigurarse y dar lugar a piezas visuales capaces de habitar tanto el mundo del arte como el del branding.",
+        tools: ["Illustrator","Sketchbook", "Photoshop"],
+        tags: ["Ilustración", "Personajes", "Arte Vectorial"],
+        year: "2025",
+        size: "medium",
+        rotation: 2
+      },
+      {
+        id: 8,
+        title: "Vaivén",
+        subtitle: "Diseño de Logotipo",
+        category: "logotipos",
+        colorName: "neon",
+        image: "fotos/vaiven.png",
+        images: [
+          "fotos/vaiven.png",
+          "fotos/vaiven3.png",
+          "fotos/vaiven10.jpg"
+        ],
+        description: "Diseño de un imagotipo para un centro recreativo concebido como un punto de mobiliario público con carácter lúdico y énfasis en el agua. En el marco de un proyecto que también incluyó el diseño industrial del mobiliario, se nos encomendó la conceptualización de un espacio capaz de integrar la diversión del juego, la conciencia sobre la importancia del agua y la utilidad dentro del entorno samario, articulando estos elementos en una propuesta visual y funcional coherente.",
+        concept: "La simplicidad fue un principio fundamental durante el proceso de diseño. A partir de un rectángulo de bordes redondeados busqué universalizar la imagen del logo, construyendo una propuesta gráfica clara y accesible. Con esa misma geometría resolví tanto la representación de un columpio, ubicado a la izquierda y reducido a su forma más esencial, como el diseño de una tipografía suave, robusta y amigable que reforzara el carácter lúdico del proyecto. La paleta cromática retomó los tonos azules característicos de Andén, en relación con la temática del agua, aunque evitando una asociación excesivamente literal. Mi intención no fue desarrollar un logo —ni siquiera un nombre— que remitiera de manera inmediata a este elemento, sino alejarme de la obviedad para explorar el concepto del balanceo como eje central de la propuesta. El movimiento del columpio se convirtió así en la idea rectora de un espacio concebido para entretener, refrescar y divertir, integrando estos valores en una identidad visual sencilla, coherente y cargada de significado.",
+        tools: ["Illustrator", "Photoshop"],
+        tags: ["Logotipo", "Tipografía"],
+        year: "2026",
+        size: "wide",
+        rotation: -1
+      },
+      {
+        id: 9,
+        title: "PVZ",
+        subtitle: "Ilustración de Videojuego",
+        category: "ilustracion",
+        image: "fotos/x.png",
+        images: [
+          "fotos/pvz.png",
+          "fotos/pvz2.png",
+          "fotos/pvz3.png"
+        ],
+        description: "Ilustración digital desarrollada en el marco de la asignatura Ilustración Digital, inspirada en la portada del cómic *Plants vs. Zombies: Escuadrón Antiabusón* (guion de Paul Tobin e ilustraciones de Ron Chan), publicado por ECC Ediciones en diciembre de 2017. El ejercicio consistió en reinterpretar la composición original incorporando elementos y conceptos visuales propios de la segunda entrega del videojuego, así como personajes pertenecientes a esta versión. Paralelamente, la pieza buscó alejarse de la estética de la referencia para adoptar un lenguaje gráfico más cercano a mi estilo personal, caracterizado por una influencia del cómic cartoon, el uso de formas expresivas y una construcción visual más dinámica y caricaturesca.",
+        concept: "La ilustración explora el enfrentamiento entre dos fuerzas opuestas a través de una puesta en escena dinámica y humorística, donde la acción, la exageración de las formas y la expresividad de los personajes se convierten en los principales recursos narrativos. A partir del universo de *Plants vs. Zombies*, la obra busca transmitir una sensación de aventura y caos controlado, celebrando el carácter lúdico y desenfadado del videojuego mientras lo reinterpreta desde una visión gráfica personal.",
+        tools: ["Sketchbook", "Photoshop"],
+        tags: ["Ilustración", "Editorial", "Rediseño"],
+        year: "2025",
+        size: "large",
+        rotation: 0.8
+      },
+      {
+        id: 10,
+        title: "Ilustraciones Low Poly",
+        subtitle: "Arte Vectorial",
+        category: "ilustracion",
+        colorName: "cyan",
+        image: "fotos/es.png",
+        images: [
+          "fotos/vaino1.png",
+          "fotos/vaino2.png",
+          "fotos/vaino3.png"
+        ],
+        description: "Trabajos de ilustración realizados mediante la técnica *low poly*, orientados a la simplificación de elementos tridimensionales complejos a través de estructuras construidas exclusivamente con triángulos. Mediante el uso de paletas de colores complementarios y una distribución estratégica de las formas, se recrearon volúmenes y relieves, empleando triángulos más grandes en las zonas de sombra y triángulos más pequeños y abundantes en las áreas iluminadas para reforzar la sensación de profundidad y detalle.",
+        concept: "El concepto de la serie se centra en la capacidad de la geometría para sintetizar la realidad sin perder su esencia visual. A través de la fragmentación de las formas en planos triangulares, las obras exploran la relación entre simplificación y complejidad, demostrando cómo elementos mínimos pueden construir imágenes reconocibles, volumétricas y visualmente atractivas mediante el uso estratégico de la luz, el color y la composición.",
+        tools: ["Adobe Illustrator"],
+        tags: ["Ilustración", "Vectores", "Conceptualización"],
+        year: "2025",
+        size: "medium",
+        rotation: -0.8
+      },
+      {
+        id: 11,
+        title: "Ilustración Anatómica",
+        subtitle: "Animal",
+        category: "ilustracion",
+        colorName: "hotpink",
+        image: "fotos/guepardo2.png",
+        images: [
+          "fotos/guepardo.png",
+          "fotos/guepardo.png"
+        ],
+        description: "Trabajo anatómico que buscó el desarrollo de una pieza artística que dentro del uso de pinceles acuarelados digitales y texturas no realistas, lograse cierto grado de realismo anatómico pensado en la ilustración editorial para libros de naturaleza.",
+        concept: "Tuve la oportunidad de escoger el animal de mi elección y no dudé con el guepardo: honesto, capaz, indomable; desde niño siempre ha sido de mis animales predilectos y la cercanía que siempre ha tenido con el hombre me hizo ilustrarlo con su propia complejidad: la armonía simétrica de su rostro en conjunción con su calidez y sin quitarle picardía a un felino que goza de ella.",
+        tools: ["Sketchbook", "Photoshop"],
+        tags: ["Ilustración", "Concepto", "Arte Gráfico"],
+        year: "2025",
+        size: "medium",
+        rotation: 1.2
+      },
+      {
+        id: 12,
+        title: "FLUSH",
+        subtitle: "Diseño de Logotipo",
+        category: "logotipos",
+        colorName: "electric",
+        image: "fotos/flush02.png",
+        images: [
+          "fotos/flush01.png",
+          "fotos/flush.png",
+          "fotos/flush04.png"
+        ],
+        description: "Diseño de identidad visual para una startup dedicada a servicios a domicilio de lavado y mantenimiento de vehículos particulares. El proyecto buscó construir una marca capaz de transmitir profesionalismo, cercanía y seguridad, atributos fundamentales en un servicio que implica la intervención de bienes de alto valor personal. La propuesta incluyó el desarrollo del logotipo, el logosímbolo y un sistema visual coherente con los valores de la empresa.",
+        concept: "El concepto de la marca nació de una idea muy simple: la confianza. Cuando pensamos en servicios para vehículos suelen aparecer siempre los mismos recursos visuales —llantas, carrocerías, carreteras o siluetas de autos—, pero quise alejarme de esa obviedad y buscar un elemento que representara mejor la verdadera relación entre el cliente y la empresa. Por eso tomé la llave del carro como eje del diseño. Más allá de ser un objeto asociado al vehículo, la llave simboliza el acto de confianza que implica entregarle a alguien el control y el cuidado de algo tan valioso como tu automóvil. A partir de esa idea construí toda la identidad visual: un logosímbolo capaz de comunicar que el servicio no trata solo de lavar o mantener un carro, sino de ganarse la confianza de quien lo pone en tus manos.",
+        tools: ["Illustrator", "Photoshop", "Lightroom"],
+        tags: ["Logotipo", "Identidad Visual", "Paleta de color"],
+        year: "2025",
+        size: "small",
+        rotation: -1.8
+      }
+    ];
+
+    // ===========================
+    // CUSTOM CURSOR
+    // ===========================
+    const cursor = document.getElementById('cursor');
+    const cursorDot = document.getElementById('cursorDot');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+    });
+
+    function animateCursor() {
+      cursorX += (mouseX - cursorX) * 0.70;
+      cursorY += (mouseY - cursorY) * 0.70;
+      cursor.style.transform =
+      `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Hover effect on interactive elements
+    const interactiveEls = 'a, button, .gallery-item, .filter-btn, .tool-tag, .cat-tag, [data-hover]';
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest(interactiveEls)) {
+        cursor.classList.add('hovering');
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest(interactiveEls)) {
+        cursor.classList.remove('hovering');
+      }
+    });
+
+    // ===========================
+    // MOBILE MENU
+    // ===========================
+    const mobileMenu = document.getElementById('mobileMenu');
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.add('opacity-100');
+    });
+    document.getElementById('closeMobileMenu').addEventListener('click', () => {
+      mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.remove('opacity-100');
+    });
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+        mobileMenu.classList.remove('opacity-100');
+      });
+    });
+
+    // ===========================
+    // GALLERY RENDERING
+    // ===========================
+    const galleryGrid = document.getElementById('galleryGrid');
+    let currentFilter = 'all';
+    let visibleCount = 8;
+
+    function getColorClass(colorName) {
+      const map = {
+        neon: { bg: 'bg-neon', text: 'text-deepbg', border: 'border-neon' },
+        coral: { bg: 'bg-coral', text: 'text-white', border: 'border-coral' },
+        electric: { bg: 'bg-electric', text: 'text-white', border: 'border-electric' },
+        sun: { bg: 'bg-sun', text: 'text-deepbg', border: 'border-sun' },
+        cyan: { bg: 'bg-cyan', text: 'text-deepbg', border: 'border-cyan' },
+        hotpink: { bg: 'bg-hotpink', text: 'text-white', border: 'border-hotpink' },
+      };
+      return map[colorName] || map.neon;
+    }
+
+    function getSpanClasses(size) {
+      switch(size) {
+        case 'large': return 'sm:col-span-2 sm:row-span-2 aspect-square';
+        case 'medium': return 'sm:col-span-1 sm:row-span-2 aspect-[3/4]';
+        case 'small': return 'sm:col-span-1 sm:row-span-1 aspect-[4/3]';
+        case 'wide': return 'sm:col-span-1 sm:row-span-1 aspect-[16/9]';
+        default: return 'sm:col-span-1 sm:row-span-1 aspect-[4/3]';
+      }
+    }
+
+    function renderGallery() {
+      const filtered = currentFilter === 'all' 
+        ? projects 
+        : projects.filter(p => p.category === currentFilter);
+      
+      const visible = filtered.slice(0, visibleCount);
+      
+      galleryGrid.innerHTML = visible.map((project, index) => {
+        const colors = getColorClass(project.colorName);
+        const span = getSpanClasses(project.size);
+        const staggerDelay = index * 80;
+        
+        return `
+          <div class="gallery-item stagger-in ${span} rounded-2xl group" 
+               data-category="${project.category}" 
+               data-id="${project.id}"
+               style="transition-delay: ${staggerDelay}ms;"
+               data-hover>
+            <div class="absolute inset-0 rounded-2xl" style="background: ${project.color}; opacity: 0.15;"></div>
+            <img src="${project.image}" alt="${project.title}" class="rounded-2xl" loading="lazy">
+            
+            <!-- Decorative corner -->
+            <div class="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 ${colors.border} opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="border-color: ${project.color}"></div>
+            <div class="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="border-color: ${project.color}"></div>
+            
+            <!-- Overlay -->
+            <div class="overlay">
+              <div class="overlay-bg"></div>
+              <div class="relative z-10">
+                <div class="flex flex-wrap gap-2 mb-3">
+                  ${project.tags.map(tag => `<span class="cat-tag ${colors.bg} ${colors.text}" style="font-size: 0.65rem;">${tag}</span>`).join('')}
+                </div>
+                <h3 class="font-syne text-xl md:text-2xl font-bold mb-1">${project.title}</h3>
+                <p class="text-white/50 text-sm mb-4">${project.subtitle}</p>
+                <button class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider ${colors.bg} ${colors.text} px-4 py-2 rounded-full transition-transform hover:scale-105 open-project-btn" data-id="${project.id}">
+                  Explorar
+                  <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Year badge -->
+            <div class="absolute top-4 left-4 font-space text-xs font-bold text-white/30 opacity-0 group-hover:opacity-100 transition-opacity">${project.year}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Re-init icons
+      lucide.createIcons();
+
+      // Stagger animation
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.stagger-in').forEach((el, i) => {
+          setTimeout(() => {
+            el.classList.add('visible');
+          }, i * 80);
+        });
+      });
+
+      // Show/hide load more
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      if (visibleCount >= filtered.length) {
+        loadMoreBtn.style.display = 'none';
+      } else {
+        loadMoreBtn.style.display = 'inline-flex';
+      }
+
+      // Attach modal open events
+      document.querySelectorAll('.open-project-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = parseInt(e.currentTarget.dataset.id);
+          openModal(id);
+        });
+      });
+
+      // Make gallery items clickable too
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        item.addEventListener('dblclick', (e) => {
+          const id = parseInt(item.dataset.id);
+          openModal(id);
+        });
+      });
+    }
+
+    // ===========================
+    // FILTERS
+    // ===========================
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        const colorName = btn.dataset.color;
+        currentFilter = filter;
+        visibleCount = 8;
+        
+        // Reset all buttons
+        filterBtns.forEach(b => {
+          b.classList.remove('active');
+          b.className = b.className.replace(/bg-\S+/g, '');
+          b.className = b.className.replace(/text-\S+/g, '');
+          b.classList.add('bg-white/5', 'text-white/70');
+        });
+
+        // Activate current
+        btn.classList.add('active');
+        btn.classList.remove('bg-white/5', 'text-white/70');
+
+        // Apply color
+        const colorMap = {
+          neon: 'bg-neon text-deepbg',
+          coral: 'bg-coral text-white',
+          electric: 'bg-electric text-white',
+          sun: 'bg-sun text-deepbg',
+          cyan: 'bg-cyan text-deepbg',
+          hotpink: 'bg-hotpink text-white',
+        };
+        btn.classList.add(...(colorMap[colorName] || 'bg-neon text-deepbg').split(' '));
+
+        renderGallery();
+      });
+    });
+
+    // Load more
+    document.getElementById('loadMoreBtn').addEventListener('click', () => {
+      visibleCount += 4;
+      renderGallery();
+    });
+
+    // ===========================
+    // MODAL
+    // ===========================
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalPanel = document.getElementById('modalPanel');
+    const modalContent = document.getElementById('modalContent');
+
+    function openModal(projectId) {
+      const project = projects.find(p => p.id === projectId);
+      if (!project) return;
+
+      const colors = getColorClass(project.colorName);
+
+      modalContent.innerHTML = `
+        <div class="relative">
+          <!-- Close button -->
+          <button class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors close-modal-btn" data-hover>
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+          
+          <!-- Header image -->
+          <div class="relative aspect-video rounded-t-xl overflow-hidden">
+            <img src="${project.images[0]}" alt="${project.title}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-deepbg via-deepbg/30 to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6">
+              <div class="flex flex-wrap gap-2 mb-3">
+                ${project.tags.map(tag => `<span class="cat-tag ${colors.bg} ${colors.text}">${tag}</span>`).join('')}
+              </div>
+              <h2 class="font-syne text-3xl md:text-4xl font-extrabold">${project.title}</h2>
+              <p class="text-white/50 mt-1">${project.subtitle} · ${project.year}</p>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="p-6 md:p-8 space-y-6">
+            <!-- Description -->
+            <div>
+              <h3 class="font-syne text-lg font-bold mb-2 flex items-center gap-2">
+                <span class="w-6 h-[2px] inline-block" style="background: ${project.color}"></span>
+                Descripción
+              </h3>
+              <p class="text-white/60 leading-relaxed">${project.description}</p>
+            </div>
+
+            <!-- Concept -->
+            <div>
+              <h3 class="font-syne text-lg font-bold mb-2 flex items-center gap-2">
+                <span class="w-6 h-[2px] inline-block" style="background: ${project.color}"></span>
+                Concepto Creativo
+              </h3>
+              <p class="text-white/60 leading-relaxed italic">"${project.concept}"</p>
+            </div>
+
+            <!-- More images -->
+            ${project.images.length > 1 ? `
+            <div>
+              <h3 class="font-syne text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="w-6 h-[2px] inline-block" style="background: ${project.color}"></span>
+                Resultado
+              </h3>
+              <div class="grid grid-cols-2 gap-3">
+                ${project.images.slice(1).map(img => `
+                  <div class="aspect-[4/3] rounded-xl overflow-hidden">
+                    <img src="${img}" alt="Project process" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500" data-hover>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            ` : ''}
+
+            <!-- Tools -->
+            <div>
+              <h3 class="font-syne text-lg font-bold mb-3 flex items-center gap-2">
+                <span class="w-6 h-[2px] inline-block" style="background: ${project.color}"></span>
+                Herramientas
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                ${project.tools.map(tool => `<span class="tool-tag" style="--tw-bg-opacity:0.08; border-color: ${project.color}33;">${tool}</span>`).join('')}
+              </div>
+            </div>
+
+            ${project.pdf ? `
+             <div class="pt-2">
+             <a href="${project.pdf}"
+             target="_blank"
+             class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-syne font-bold text-sm uppercase tracking-wider transition-transform hover:scale-105"
+             style="background:${project.color}; color:${project.colorName === 'sun' || project.colorName === 'neon' || project.colorName === 'cyan' ? '#0A0A0F' : '#fff'}">
+             <i data-lucide="download" class="w-4 h-4"></i>
+             Descargar Manual
+             </a>
+            </div>
+            ` : ''}
+
+            <!-- CTA -->
+            <div class="flex items-center justify-between pt-4 border-t border-white/10">
+              <div class="flex items-center gap-3 text-white/30 text-sm">
+                <span>${project.year}</span>
+                <span>·</span>
+                <span class="capitalize">${project.category}</span>
+              </div>
+              <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-syne font-bold text-sm uppercase tracking-wider transition-transform hover:scale-105 close-modal-btn" style="background: ${project.color}; color: ${project.colorName === 'sun' || project.colorName === 'neon' || project.colorName === 'cyan' ? '#0A0A0F' : '#fff'}" data-hover>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modalBackdrop.classList.add('active');
+      modalPanel.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      // Re-init icons
+      lucide.createIcons();
+
+      // Close events
+      document.querySelectorAll('.close-modal-btn').forEach(btn => {
+        btn.addEventListener('click', closeModal);
+      });
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove('active');
+      modalPanel.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    modalBackdrop.addEventListener('click', closeModal);
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // ===========================
+    // ABOUT TOGGLE
+    // ===========================
+    const aboutToggle = document.getElementById('aboutToggle');
+    const aboutContent = document.getElementById('aboutContent');
+    const aboutPlusIcon = document.getElementById('aboutPlusIcon');
+    let aboutOpen = false;
+
+    aboutToggle.addEventListener('click', () => {
+      aboutOpen = !aboutOpen;
+      aboutContent.classList.toggle('open', aboutOpen);
+      aboutPlusIcon.style.transform = aboutOpen ? 'rotate(45deg)' : 'rotate(0)';
+      aboutToggle.querySelector('#aboutIcon').classList.toggle('bg-neon', aboutOpen);
+      aboutToggle.querySelector('#aboutIcon').classList.toggle('border-neon', aboutOpen);
+      aboutToggle.querySelector('#aboutIcon').classList.toggle('text-deepbg', aboutOpen);
+    });
+
+    // ===========================
+    // SCROLL ANIMATIONS
+    // ===========================
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    function observeStaggerElements() {
+      document.querySelectorAll('.stagger-in').forEach(el => observer.observe(el));
+    }
+
+    // ===========================
+    // NAVBAR SCROLL EFFECT
+    // ===========================
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 100) {
+        navbar.style.background = 'rgba(10, 10, 15, 0.85)';
+        navbar.style.backdropFilter = 'blur(20px)';
+        navbar.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+      } else {
+        navbar.style.background = 'transparent';
+        navbar.style.backdropFilter = 'none';
+        navbar.style.borderBottom = 'none';
+      }
+
+      lastScroll = currentScroll;
+    });
+
+    // ===========================
+    // HERO TITLE CHAR SPLIT
+    // ===========================
+    function splitChars(el) {
+      const text = el.textContent;
+      el.innerHTML = '';
+      text.split('').forEach(char => {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        el.appendChild(span);
+      });
+    }
+
+    // ===========================
+    // INIT
+    // ===========================
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGallery();
+      observeStaggerElements();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
